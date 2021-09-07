@@ -66,6 +66,5 @@ THEN I am logged out of the site and presented with a menu with the options Sear
 
 ## Links
 
-https://github.com/Jashawns/weather_dashboard
+https://github.com/Jashawns/Book_Search_Engine
 
-https://jashawns.github.io/weather_dashboard/
