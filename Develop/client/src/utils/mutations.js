@@ -1,6 +1,6 @@
-// tag sed to write a GraphQL query that is parsed into a standard GraphQL
+// GraphQL query parsed to standard GraphQL
 import gql from "graphql-tag";
-// Data from models
+// models data
 export const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {

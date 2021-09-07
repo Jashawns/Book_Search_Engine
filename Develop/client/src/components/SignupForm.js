@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-// import { createUser } from '../utils/API';
+// connect authorization util
 import Auth from '../utils/auth';
-// primary API for executing mutations in an Apollo application
+// connecting to add user from utils mutation
+import { ADD_USER } from '../utils/mutations';
 import { useMutation } from '@apollo/react-hooks';
 
-// import { createUser } from '../utils/API';
-import Auth from '../utils/auth';
-// add user from mutation folder
-import { ADD_USER } from '../utils/mutations';
-
 const SignupForm = () => {
+  // using add_user mutation for signup
+  const [addUser] = useMutation(ADD_USER);
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
-// add user mutation
-  const[addUser] = useMutation(ADD_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -28,37 +24,31 @@ const SignupForm = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-        // check if form has everything (as per react-bootstrap docs)
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        // use try/catch instead of promises to handle errors
-        try {
-          // execute addUser mutation and pass in variable data from form
-          const { data } = await addUser({
-            variables: { ...userFormData}
-          });
+    // check if form has everything (as per react-bootstrap docs)
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
-          if (!response.ok) {
-            throw new Error('something went wrong!');
-          }
-    
-          Auth.login(data.addUser.token)
-    
-        } catch (err) {
-          console.error(err);
-          setShowAlert(true);
-        }
-      
-  
-      setUserFormData({
-        username: '',
-        email: '',
-        password: '',
+    try {
+      const { entry } = await addUser({
+        variables: {...userFormData},
       });
-    };
+
+      // repeat removal and add from loginform
+      Auth.login(entry.addUser.token);
+    } catch (err) {
+      console.error(err);
+      setShowAlert(true);
+    }
+
+    setUserFormData({
+      username: '',
+      email: '',
+      password: '',
+    });
+  };
 
   return (
     <>
@@ -90,6 +80,7 @@ const SignupForm = () => {
             name='email'
             onChange={handleInputChange}
             value={userFormData.email}
+            autoComplete="on"
             required
           />
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>

@@ -1,16 +1,14 @@
 // see SignupForm.js for comments
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
 import Auth from '../utils/auth';
-// primary API for executing mutations in an Apollo application
-import { useMutation } from '@apollo/react-hooks';
-// import mutation folder
+// add login mutation also delete loginUser API call
 import { LOGIN_USER } from '../utils/mutations';
+// add useMutation React hook as primary API to execute mutations in an Apollo application
+import { useMutation } from '@apollo/react-hooks';
 
 const LoginForm = () => {
-  // add login
-  const [login] = useMutation(LOGIN_USER); 
+  const [login] = useMutation(LOGIN_USER);
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -34,16 +32,11 @@ const LoginForm = () => {
      }
 
     try {
-      // login and auth
-      const { data } = await login({
+      const { entry } = await login({
         variables: {...userFormData} 
       });
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-      
-      Auth.login(data.login.token);
+// removing !response.ok and combine data, login and, token for one authorization login code
+      Auth.login(entry.login.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
@@ -70,6 +63,7 @@ const LoginForm = () => {
             name='email'
             onChange={handleInputChange}
             value={userFormData.email}
+            autoComplete= "on"
             required
           />
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
@@ -83,6 +77,7 @@ const LoginForm = () => {
             name='password'
             onChange={handleInputChange}
             value={userFormData.password}
+            autoComplete= "on"
             required
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
